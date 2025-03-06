@@ -4,3 +4,5 @@ logs/
 .env 
 .logs
 .DS_Store
+.vscode
+pnpm-lock.yaml
