@@ -22,6 +22,15 @@ async function main() {
         if (!process.env.METEORA_POOL_ADDRESS) {
             throw new Error('METEORA_POOL_ADDRESS is not set');
         }
+        if (!process.env.SOLANA_RPC_URL) {
+            throw new Error('SOLANA_RPC_URL is not set');
+        }
+
+        // Check if using default RPC URL which is known to be problematic
+        const defaultRpcUrl = 'https://api.mainnet-beta.solana.com';
+        if (process.env.SOLANA_RPC_URL === defaultRpcUrl) {
+            throw new Error('Warning: Using default Solana RPC URL which is known to have issues.\nPlease use a different RPC provider to avoid 410 Gone errors');
+        }
 
         // Set up cleanup on process termination
         process.on('SIGINT', () => cleanupAndExit());
