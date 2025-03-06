@@ -3,8 +3,7 @@ dotenv.config();
 
 import { MeteoraRebalancer } from '../src/index';
 import { EdwinSolanaWallet } from 'edwin-sdk';
-import { sendAlert, AlertType } from "../src/utils/alerts";
-
+import { sendAlert, AlertType } from '../src/utils/alerts';
 
 function delay(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -78,7 +77,10 @@ main().catch(async (error) => {
         console.error(
             'Not enough native token balance for transaction and position creation fees. Please fund the wallet with more native token and try again.'
         );
-        await sendAlert(AlertType.ERROR, 'Not enough native token balance for transaction and position creation fees. Please fund the wallet with more native token and try again.');
+        await sendAlert(
+            AlertType.ERROR,
+            'Not enough native token balance for transaction and position creation fees. Please fund the wallet with more native token and try again.'
+        );
         await cleanupAndExit(1);
         return;
     }

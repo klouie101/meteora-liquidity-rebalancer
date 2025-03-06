@@ -28,16 +28,16 @@ export enum AlertType {
     PERFORMANCE_REPORT = 'PERFORMANCE_REPORT',
     ERROR = 'ERROR',
     WARNING = 'WARNING',
-    INFO = 'INFO'
+    INFO = 'INFO',
 }
 
 export async function sendAlert(type: AlertType, message: string) {
     const prefix = `${ALERT_ICONS[type]}[${type}] `;
     const formattedMessage = prefix + message;
-    
+
     // Always log to console
     console.log(formattedMessage);
-    
+
     // Send to Telegram if enabled
     if (telegramEnabled && bot && TELEGRAM_CHAT_ID) {
         try {

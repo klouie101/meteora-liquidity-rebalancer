@@ -179,11 +179,16 @@ export class MeteoraRebalancer {
             throw new Error('Failed to get pool details for pool: ' + this.poolAddress);
         }
 
-        const rangeInterval = Math.ceil((Number(process.env.METEORA_POSITION_RANGE_PER_SIDE_RELATIVE) * 10000) / this.poolDetails.binStep);
+        const rangeInterval = Math.ceil(
+            (Number(process.env.METEORA_POSITION_RANGE_PER_SIDE_RELATIVE) * 10000) / this.poolDetails.binStep
+        );
         if (rangeInterval > METERORA_MAX_BINS_PER_SIDE) {
-            sendAlert(AlertType.WARNING, `Range interval ${rangeInterval} is greater than the maximum allowed ${METERORA_MAX_BINS_PER_SIDE}. Clipping to max.`);
+            sendAlert(
+                AlertType.WARNING,
+                `Range interval ${rangeInterval} is greater than the maximum allowed ${METERORA_MAX_BINS_PER_SIDE}. Clipping to max.`
+            );
         }
-        this.meteoraRangeInterval = Math.min(rangeInterval, METERORA_MAX_BINS_PER_SIDE);        
+        this.meteoraRangeInterval = Math.min(rangeInterval, METERORA_MAX_BINS_PER_SIDE);
 
         const balances = await this.getUsableBalances();
         console.log(
@@ -340,16 +345,18 @@ export class MeteoraRebalancer {
 
     private async addLiquidity() {
         await this.verifyNativeTokenBufferForPositions();
-        const balances = await this.getUsableBalances();
+        let balances = await this.getUsableBalances();
+
         console.log('Adding liquidity with range interval: ', this.meteoraRangeInterval);
-        await this.retry(() =>
-            this.meteora.addLiquidity({
+        await this.retry(async () => {
+            balances = await this.getUsableBalances();
+            return this.meteora.addLiquidity({
                 poolAddress: this.poolAddress,
                 amount: balances[this.poolDetails.assetASymbol].toString(),
                 amountB: balances[this.poolDetails.assetBSymbol].toString(),
-                rangeInterval: this.meteoraRangeInterval
-            })
-        );
+                rangeInterval: this.meteoraRangeInterval,
+            });
+        });
         this.balanceLogger.logBalances(
             balances[this.poolDetails.assetASymbol],
             balances[this.poolDetails.assetBSymbol],
