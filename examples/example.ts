@@ -29,7 +29,9 @@ async function main() {
         // Check if using default RPC URL which is known to be problematic
         const defaultRpcUrl = 'https://api.mainnet-beta.solana.com';
         if (process.env.SOLANA_RPC_URL === defaultRpcUrl) {
-            throw new Error('Warning: Using default Solana RPC URL which is known to have issues.\nPlease use a different RPC provider to avoid 410 Gone errors');
+            throw new Error(
+                'Warning: Using default Solana RPC URL which is known to have issues.\nPlease use a different RPC provider to avoid 410 Gone errors'
+            );
         }
 
         // Set up cleanup on process termination
@@ -45,6 +47,9 @@ async function main() {
         const changedPosition = await meteoraRebalancer.loadInitialState();
         console.log('Initial position loaded:', changedPosition ? 'Created new position' : 'Using existing position');
 
+        const rebalanceIntervalSeconds = process.env.REBALANCE_INTERVAL_SECONDS
+            ? parseInt(process.env.REBALANCE_INTERVAL_SECONDS)
+            : 10;
         // Define rebalance loop as a separate function
         async function runRebalanceLoop() {
             try {
@@ -66,13 +71,13 @@ async function main() {
                     throw error;
                 }
             }
-            await delay(10 * 1000);
+            await delay(rebalanceIntervalSeconds * 1000);
             await runRebalanceLoop();
         }
 
         // Start the rebalance loop after a delay
-        console.log('Starting rebalance loop in 10 seconds...');
-        setTimeout(runRebalanceLoop, 10 * 1000);
+        console.log(`Starting rebalance loop in ${rebalanceIntervalSeconds} seconds...`);
+        setTimeout(runRebalanceLoop, rebalanceIntervalSeconds * 1000);
     } catch (error) {
         console.error('Error in main function:', error);
         await cleanupAndExit(1);

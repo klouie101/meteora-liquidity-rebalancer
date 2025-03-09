@@ -49,6 +49,7 @@ Create a `.env` file based on the `.env.example`:
 - `METEORA_POSITION_RANGE_PER_SIDE_RELATIVE`: This controls the active price range for each side of the position. The narrower the range, the higher the concentration of liquidity, and hence a greater number of rebalancing operations will be required.
 (For example, a value of 0.05 represents a ±5% range from the opening price.)
 - `NATIVE_TOKEN_FEE_BUFFER`: Amount of SOL to reserve for transaction fees (default: 0.1)
+- `REBALANCE_INTERVAL_SECONDS`: Interval in seconds between rebalancing operations (default: 10)
 
 Pro Tip: set the value of `METEORA_POSITION_RANGE_PER_SIDE_RELATIVE` carefully to balance between collecting fees for higher liquidity but not requiring too many re-balancing operations that incur permanent losses.
 
