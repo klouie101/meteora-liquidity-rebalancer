@@ -33,6 +33,7 @@ jobs:
         with:
           images: edwinfinance/edwin-meteora-rebalancer
           tags: |
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
             type=ref,event=branch
             type=ref,event=pr
             type=semver,pattern={{version}}
